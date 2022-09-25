@@ -249,13 +249,19 @@ def main(**kwargs):
     else:
         c.G_kwargs.class_name = 'training.networks_stylegan3.Generator'
         c.G_kwargs.magnitude_ema_beta = 0.5 ** (c.batch_size / (20 * 1e3))
+
+        c.G_kwargs.use_radial_filters = True # Use radially symmetric downsampling filters.
+        c.G_kwargs.conv_kernel = 1 # Use 1x1 convolutions.
+        c.G_kwargs.channel_base *= 2 # Double the number of feature maps.
+        c.G_kwargs.channel_max *= 2        
         if opts.cfg == 'stylegan3-r':
-            c.G_kwargs.conv_kernel = 1 # Use 1x1 convolutions.
-            c.G_kwargs.channel_base *= 2 # Double the number of feature maps.
-            c.G_kwargs.channel_max *= 2
-            c.G_kwargs.use_radial_filters = True # Use radially symmetric downsampling filters.
+            print("Stylegan3-R")
+
             c.loss_kwargs.blur_init_sigma = 10 # Blur the images seen by the discriminator.
             c.loss_kwargs.blur_fade_kimg = c.batch_size * 200 / 32 # Fade out the blur during the first N kimg.
+        else:
+            print("Stylegan3-T")
+
 
     # Augmentation.
     if opts.aug != 'noaug':
